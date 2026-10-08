@@ -1,0 +1,142 @@
+{
+  "session_id": "1D7E132C",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "16D5OV",
+  "subject": "math",
+  "start_time": "2026-04-04T18:45:00",
+  "end_time": "2026-04-04T18:46:59",
+  "scheduled_end": "2026-04-04T18:47:00",
+  "duration_min": 2,
+  "violations": [
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:45:08"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:45:28"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.40)",
+      "time": "18:45:34",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:45:35"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.38)",
+      "time": "18:45:45",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "3 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:45:45"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 64%)",
+      "icon": "\ud83d\udcf1",
+      "time": "18:45:49"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:45:52"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 41%)",
+      "icon": "\ud83d\udcf1",
+      "time": "18:45:57"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "3 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:45:58"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 53%)",
+      "icon": "\ud83d\udcf1",
+      "time": "18:46:02"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:46:05"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 41%)",
+      "icon": "\ud83d\udcf1",
+      "time": "18:46:07"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:46:26"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.49)",
+      "time": "18:46:40",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:46:49"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 41%)",
+      "icon": "\ud83d\udcf1",
+      "time": "18:46:50"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "18:46:55"
+    }
+  ],
+  "attention_score": 10,
+  "total_violations": 18,
+  "status": "completed"
+}

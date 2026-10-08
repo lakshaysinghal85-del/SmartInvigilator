@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Biometric Liveness Detection Exam System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#05080f;--surf:#0b1121;--surf2:#0f1a2e;--border:#1a2d4a;
+  --accent:#00c8ff;--accent2:#7c3aed;--green:#00ff9d;--red:#ff4060;--amber:#ffb830;
+  --text:#dde8f5;--muted:#4a6080;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(0,200,255,0.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,200,255,0.03) 1px,transparent 1px);background-size:44px 44px;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 45% at 50% 0%,rgba(0,200,255,0.06),transparent);}
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 44px;background:rgba(5,8,15,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.logo{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:800;letter-spacing:-.3px;}
+.logo-badge{width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+.logo span{color:var(--accent);}
+.btn-ghost{padding:7px 16px;background:transparent;border:1px solid var(--border);
+  border-radius:8px;color:var(--muted);font-family:var(--sans);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;text-decoration:none;}
+.btn-ghost:hover{color:var(--text);border-color:var(--accent);}
+.hero{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;align-items:center;padding:90px 44px;max-width:1160px;margin:0 auto;}
+@media(max-width:880px){.hero{grid-template-columns:1fr;padding:60px 24px;}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;
+  background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.18);border-radius:100px;
+  font-size:11px;font-weight:600;color:var(--accent);font-family:var(--mono);letter-spacing:1px;margin-bottom:22px;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+h1{font-size:clamp(32px,4.5vw,56px);font-weight:800;line-height:1.06;letter-spacing:-2px;margin-bottom:18px;}
+h1 span{color:var(--accent);}
+.hero-desc{font-size:15px;line-height:1.75;color:var(--muted);margin-bottom:32px;max-width:420px;}
+.detect-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{padding:6px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:100px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.chip .dot{width:5px;height:5px;border-radius:50%;background:var(--green);}
+.join-card{background:var(--surf);border:1px solid var(--border);border-radius:22px;
+  padding:32px;position:relative;overflow:hidden;}
+.join-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.join-title{font-size:19px;font-weight:700;margin-bottom:4px;}
+.join-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px;letter-spacing:1px;}
+.field{margin-bottom:16px;}
+label{display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;}
+input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:11px;color:var(--text);font-family:var(--mono);font-size:14px;outline:none;transition:border .2s;}
+input:focus{border-color:var(--accent);}
+input::placeholder{color:var(--muted);}
+#examCode{font-size:22px;font-weight:600;letter-spacing:6px;text-align:center;text-transform:uppercase;}
+.timer-preview{display:none;background:rgba(255,184,48,0.06);border:1px solid rgba(255,184,48,0.2);
+  border-radius:10px;padding:10px 14px;margin-bottom:16px;font-family:var(--mono);
+  font-size:12px;color:var(--amber);}
+.timer-preview.show{display:flex;align-items:center;gap:8px;}
+.btn-join{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#0099bb);
+  border:none;border-radius:12px;color:#000;font-family:var(--sans);font-size:15px;font-weight:800;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-join:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,200,255,.25);}
+.btn-join:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.error-banner{display:none;background:rgba(255,64,96,0.08);border:1px solid rgba(255,64,96,0.25);
+  border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:12px;
+  color:var(--red);margin-bottom:14px;align-items:center;gap:8px;}
+.error-banner.show{display:flex;}
+.features{position:relative;z-index:1;padding:60px 44px;max-width:1160px;margin:0 auto;}
+.sec-label{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.sec-title{font-size:34px;font-weight:800;letter-spacing:-1px;margin-bottom:48px;text-align:center;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+.feat-card{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .25s;}
+.feat-card:hover{border-color:rgba(0,200,255,0.28);transform:translateY(-3px);}
+.feat-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.feat-name{font-size:14px;font-weight:700;margin-bottom:6px;}
+.feat-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.steps{background:var(--surf2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:60px 44px;position:relative;z-index:1;}
+.steps-inner{max-width:860px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:center;}
+@media(max-width:680px){.steps-inner{grid-template-columns:1fr;}}
+.step-num{width:48px;height:48px;border-radius:50%;border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+  font-size:18px;font-weight:600;color:var(--accent);margin:0 auto 14px;}
+.step-title{font-size:15px;font-weight:700;margin-bottom:7px;}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.65;}
+footer{position:relative;z-index:1;text-align:center;padding:28px;
+  color:var(--muted);font-size:12px;font-family:var(--mono);border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-badge">🔬</div>
+    Biometric Liveness Detection <span>Exam System</span>
+  </div>
+  <a class="btn-ghost" href="/teacher">🎓 Teacher Panel</a>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="hero-badge"><span class="badge-dot"></span>AI-POWERED BIOMETRIC MONITORING</div>
+    <h1>Secure Exams with<br/><span>Biometric AI</span></h1>
+    <p class="hero-desc">Time-locked sessions with real-time face biometrics, gaze tracking, phone detection, and audio monitoring.</p>
+    <div class="detect-chips">
+      <span class="chip"><span class="dot"></span>Face Biometrics</span>
+      <span class="chip"><span class="dot"></span>Gaze Tracking</span>
+      <span class="chip"><span class="dot"></span>YOLOv8 Object Detection</span>
+      <span class="chip"><span class="dot"></span>Time-Locked Sessions</span>
+      <span class="chip"><span class="dot"></span>Excel Reports</span>
+    </div>
+  </div>
+  <div>
+    <div class="join-card">
+      <div class="join-title">Join Exam Session</div>
+      <div class="join-sub">// enter the code from your teacher</div>
+      <div class="error-banner" id="errorBanner"><span>⚠</span><span id="errorMsg"></span></div>
+      <form id="joinForm">
+        <div class="field">
+          <label>Exam Code</label>
+          <input type="text" id="examCode" placeholder="e.g. XK9P2M" maxlength="6" required
+                 oninput="this.value=this.value.toUpperCase();previewExam(this.value)"/>
+        </div>
+        <div class="timer-preview" id="timerPreview"><span>🕐</span><span id="timerText"></span></div>
+        <div class="field">
+          <label>Your Full Name</label>
+          <input type="text" id="studentName" placeholder="Enter your full name" required/>
+        </div>
+        <div class="field" id="pwdField" style="display:none">
+          <label>Exam Password</label>
+          <input type="text" id="examPwd" placeholder="Enter password from teacher"/>
+        </div>
+        <button class="btn-join" type="submit" id="joinBtn">🚀 Enter Exam</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div style="text-align:center">
+    <div class="sec-label">// detection capabilities</div>
+    <div class="sec-title">What We Monitor</div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(0,200,255,0.1)">👁️</div><div class="feat-name">Face Biometrics</div><div class="feat-desc">dlib + Haar cascade monitor presence. Multiple faces = immediate high-severity alert.</div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(124,58,237,0.1)">👀</div><div class="feat-name">Smart Gaze</div><div class="feat-desc">Only sideways head turns flagged. Looking down at paper is NOT a violation.</div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(255,64,96,0.1)">📱</div><div class="feat-name">Phone Detection</div><div class="feat-desc">YOLOv8 detects mobile phones and unauthorized devices in real-time.</div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(0,255,157,0.1)">🎙️</div><div class="feat-name">Audio Monitor</div><div class="feat-desc">Only sustained speech triggers alerts. Keyboard noise ignored.</div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(255,184,48,0.1)">🔒</div><div class="feat-name">Time-Locked</div><div class="feat-desc">Students can only join during the exact window set by teacher. No pause or early exit.</div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(0,200,255,0.1)">📊</div><div class="feat-name">Excel Reports</div><div class="feat-desc">Every session exported to .xlsx with full violation log, timestamps, and attention score.</div></div>
+  </div>
+</section>
+
+<section class="steps">
+  <div style="text-align:center;margin-bottom:40px">
+    <div class="sec-label">// workflow</div>
+    <div class="sec-title" style="margin-bottom:0">How It Works</div>
+  </div>
+  <div class="steps-inner">
+    <div><div class="step-num">1</div><div class="step-title">Teacher Creates Room</div><div class="step-desc">Teacher sets title, date, and time window. System generates a unique 6-character code.</div></div>
+    <div><div class="step-num">2</div><div class="step-title">Student Joins on Time</div><div class="step-desc">Code only works during the scheduled window. Session starts immediately, cannot be paused.</div></div>
+    <div><div class="step-num">3</div><div class="step-title">Auto Report Saved</div><div class="step-desc">Session auto-ends when time expires. Excel report with all violations sent to teacher.</div></div>
+  </div>
+</section>
+
+<footer>&copy; 2025 Biometric Liveness Detection Exam System &nbsp;|&nbsp; Python + OpenCV + YOLOv8</footer>
+
+<script>
+let examHasPassword = false;
+async function previewExam(code) {
+  const preview = document.getElementById('timerPreview');
+  const pwdField = document.getElementById('pwdField');
+  if (code.length !== 6) { preview.classList.remove('show'); pwdField.style.display='none'; return; }
+  try {
+    const res = await fetch(`/api/exam/${code}`);
+    if (!res.ok) { preview.classList.remove('show'); return; }
+    const data = await res.json();
+    if (data.error) { preview.classList.remove('show'); return; }
+    const start = new Date(data.start_dt), end = new Date(data.end_dt), now = new Date();
+    let msg;
+    if (now < start) {
+      const rem=Math.floor((start-now)/1000),h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),s=rem%60;
+      msg=`⏳ Opens in ${h?h+'h ':''}${m}m ${s}s — "${data.title}"`;
+    } else if (now > end) {
+      msg='❌ This exam window has closed';
+    } else {
+      const rem=Math.floor((end-now)/1000),m=Math.floor(rem/60),s=rem%60;
+      msg=`✅ "${data.title}" is LIVE — ${m}m ${s}s remaining`;
+    }
+    document.getElementById('timerText').textContent = msg;
+    preview.classList.add('show');
+    examHasPassword = !!data.password;
+    pwdField.style.display = examHasPassword ? 'block' : 'none';
+  } catch(e) { preview.classList.remove('show'); }
+}
+
+document.getElementById('joinForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn=document.getElementById('joinBtn');
+  const errBnr=document.getElementById('errorBanner');
+  errBnr.classList.remove('show');
+  btn.disabled=true; btn.textContent='Checking...';
+  const body={
+    exam_code:    document.getElementById('examCode').value.trim().toUpperCase(),
+    student_name: document.getElementById('studentName').value.trim(),
+    password:     document.getElementById('examPwd').value.trim(),
+  };
+  try {
+    const res=await fetch('/api/session/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if (!res.ok) { document.getElementById('errorMsg').textContent=data.error; errBnr.classList.add('show'); return; }
+    const p=new URLSearchParams({session_id:data.session_id,name:body.student_name,exam:data.exam_name,code:body.exam_code,end_dt:data.end_dt,duration:data.duration_min});
+    window.location.href=`/monitor?${p}`;
+  } catch(err) {
+    document.getElementById('errorMsg').textContent='Server error — is backend running?';
+    errBnr.classList.add('show');
+  } finally { btn.disabled=false; btn.textContent='🚀 Enter Exam'; }
+});
+</script>
+</body>
+</html>

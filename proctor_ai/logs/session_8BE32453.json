@@ -1,0 +1,72 @@
+{
+  "session_id": "8BE32453",
+  "student_name": "vansh",
+  "exam_name": "math",
+  "exam_code": "M4VXI0",
+  "subject": "math",
+  "start_time": "2026-05-06T22:56:07",
+  "end_time": "2026-05-06T22:56:59",
+  "scheduled_end": "2026-05-06T22:57:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "22:56:12"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 81%)",
+      "icon": "\ud83d\udcf1",
+      "time": "22:56:23"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "22:56:24"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "22:56:37"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 48%)",
+      "icon": "\ud83d\udcf1",
+      "time": "22:56:37"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.41)",
+      "time": "22:56:40",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 41%)",
+      "icon": "\ud83d\udcf1",
+      "time": "22:56:47"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "22:56:49"
+    }
+  ],
+  "attention_score": 60,
+  "total_violations": 8,
+  "status": "completed"
+}

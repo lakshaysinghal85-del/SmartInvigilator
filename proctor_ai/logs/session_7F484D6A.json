@@ -1,0 +1,51 @@
+{
+  "session_id": "7F484D6A",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "PQB4LW",
+  "subject": "math",
+  "start_time": "2026-05-06T23:01:00",
+  "end_time": "2026-05-06T23:01:59",
+  "scheduled_end": "2026-05-06T23:02:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:01:08"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:01:20"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 43%)",
+      "icon": "\ud83d\udcf1",
+      "time": "23:01:27"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:01:38"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:01:53"
+    }
+  ],
+  "attention_score": 75,
+  "total_violations": 5,
+  "status": "completed"
+}

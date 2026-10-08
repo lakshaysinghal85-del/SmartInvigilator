@@ -1,0 +1,51 @@
+{
+  "session_id": "6042E6D8",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "F3JLP2",
+  "subject": "math",
+  "start_time": "2026-04-05T15:39:57",
+  "end_time": "2026-04-05T15:40:59",
+  "scheduled_end": "2026-04-05T15:41:00",
+  "duration_min": 2,
+  "violations": [
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "15:40:05"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "15:40:12"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.54)",
+      "time": "15:40:20",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.48)",
+      "time": "15:40:31",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.36)",
+      "time": "15:40:47",
+      "icon": "\ud83d\udd0a"
+    }
+  ],
+  "attention_score": 75,
+  "total_violations": 5,
+  "status": "completed"
+}

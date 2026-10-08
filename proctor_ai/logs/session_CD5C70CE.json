@@ -1,0 +1,72 @@
+{
+  "session_id": "CD5C70CE",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "LZBIXH",
+  "subject": "math",
+  "start_time": "2026-04-06T10:06:09",
+  "end_time": "2026-04-06T10:06:59",
+  "scheduled_end": "2026-04-06T10:07:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "10:06:21"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 65%)",
+      "icon": "\ud83d\udcf1",
+      "time": "10:06:23"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.35)",
+      "time": "10:06:25",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "10:06:29"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.41)",
+      "time": "10:06:35",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "10:06:42"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.44)",
+      "time": "10:06:46",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.47)",
+      "time": "10:06:57",
+      "icon": "\ud83d\udd0a"
+    }
+  ],
+  "attention_score": 60,
+  "total_violations": 8,
+  "status": "completed"
+}

@@ -1,0 +1,15 @@
+{
+  "session_id": "820BCB29",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "MZIYN2",
+  "subject": "math",
+  "start_time": "2026-03-19T13:48:00",
+  "end_time": "2026-03-19T14:01:04",
+  "scheduled_end": "2026-03-19T14:00:00",
+  "duration_min": 12,
+  "violations": [],
+  "attention_score": 100,
+  "total_violations": 0,
+  "status": "completed"
+}

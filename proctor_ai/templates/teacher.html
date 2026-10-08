@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BLDS — Teacher Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#05080f; --surf:#0b1121; --surf2:#111c30;
+  --border:#1a2d4a; --accent:#00c8ff; --accent2:#7c3aed;
+  --green:#00ff9d; --red:#ff4060; --amber:#ffb830;
+  --text:#dde8f5; --muted:#4a6080;
+  --mono:'JetBrains Mono',monospace; --sans:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,200,255,0.07),transparent);}
+/* grid bg */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,200,255,0.025) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,200,255,0.025) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* ── Header ── */
+header{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;background:rgba(5,8,15,0.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.logo{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:800;letter-spacing:-0.3px;}
+.logo-badge{width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-sub{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:2px;}
+.nav-btns{display:flex;gap:10px;}
+.btn-ghost{padding:8px 18px;background:transparent;border:1px solid var(--border);
+  border-radius:8px;color:var(--muted);font-family:var(--sans);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;text-decoration:none;}
+.btn-ghost:hover{color:var(--text);border-color:var(--accent);}
+
+/* ── Main layout ── */
+.main{max-width:1100px;margin:0 auto;padding:40px 24px;
+  display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:start;}
+@media(max-width:860px){.main{grid-template-columns:1fr;}}
+
+/* ── Section card ── */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:20px;
+  padding:28px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.card-title{font-size:18px;font-weight:700;margin-bottom:4px;}
+.card-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:24px;letter-spacing:1px;}
+
+/* ── Form ── */
+.field{margin-bottom:16px;}
+label{display:block;font-family:var(--mono);font-size:11px;font-weight:500;
+  color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;}
+input,select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);border-radius:10px;color:var(--text);
+  font-family:var(--mono);font-size:13px;outline:none;transition:border .2s;}
+input:focus,select:focus{border-color:var(--accent);}
+input::placeholder{color:var(--muted);}
+select option{background:var(--surf2);}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.btn-primary{width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--accent),#007799);
+  border:none;border-radius:12px;color:#000;
+  font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;
+  transition:all .2s;margin-top:4px;letter-spacing:.3px;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);
+  box-shadow:0 8px 28px rgba(0,200,255,.25);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* ── Success panel ── */
+.success-box{display:none;margin-top:20px;
+  background:rgba(0,255,157,0.06);border:1px solid rgba(0,255,157,0.2);
+  border-radius:14px;padding:20px;}
+.success-box.show{display:block;}
+.exam-code-display{font-family:var(--mono);font-size:42px;font-weight:600;
+  color:var(--green);letter-spacing:8px;text-align:center;margin:10px 0 4px;}
+.code-caption{text-align:center;font-family:var(--mono);font-size:11px;
+  color:var(--muted);letter-spacing:2px;}
+.code-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.code-meta-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;}
+.meta-key{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:3px;}
+.meta-val{font-family:var(--mono);font-size:13px;font-weight:500;}
+.btn-copy{width:100%;padding:9px;background:transparent;border:1px solid var(--green);
+  border-radius:8px;color:var(--green);font-family:var(--mono);font-size:12px;
+  font-weight:600;cursor:pointer;margin-top:12px;transition:all .2s;}
+.btn-copy:hover{background:rgba(0,255,157,.08);}
+
+/* ── Exam rooms table ── */
+.rooms-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.rooms-title{font-size:16px;font-weight:700;}
+.rooms-count{font-family:var(--mono);font-size:11px;color:var(--accent);
+  background:rgba(0,200,255,0.08);border:1px solid rgba(0,200,255,0.2);
+  border-radius:100px;padding:3px 12px;}
+#roomsList{display:flex;flex-direction:column;gap:10px;max-height:500px;overflow-y:auto;}
+#roomsList::-webkit-scrollbar{width:4px;}
+#roomsList::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+.room-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;transition:border .2s;}
+.room-card:hover{border-color:rgba(0,200,255,0.25);}
+.room-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.room-name{font-size:14px;font-weight:700;}
+.room-code-pill{font-family:var(--mono);font-size:13px;font-weight:600;
+  color:var(--green);background:rgba(0,255,157,0.08);border:1px solid rgba(0,255,157,0.2);
+  border-radius:6px;padding:2px 10px;letter-spacing:2px;}
+.room-meta{display:flex;gap:16px;flex-wrap:wrap;}
+.room-m{font-family:var(--mono);font-size:11px;color:var(--muted);
+  display:flex;align-items:center;gap:5px;}
+.room-status-dot{width:6px;height:6px;border-radius:50%;}
+.status-open{background:var(--green);animation:pulse 1.2s infinite;}
+.status-soon{background:var(--amber);}
+.status-closed{background:var(--muted);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.room-actions{display:flex;gap:8px;margin-top:10px;}
+.btn-sm{padding:5px 14px;border-radius:6px;font-family:var(--mono);
+  font-size:11px;font-weight:600;cursor:pointer;border:1px solid;transition:all .2s;}
+.btn-sm-view{color:var(--accent);border-color:rgba(0,200,255,0.25);background:rgba(0,200,255,0.05);}
+.btn-sm-view:hover{background:rgba(0,200,255,0.1);}
+.btn-sm-export{color:var(--green);border-color:rgba(0,255,157,0.25);background:rgba(0,255,157,0.05);}
+.btn-sm-export:hover{background:rgba(0,255,157,0.1);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);
+  font-family:var(--mono);font-size:12px;letter-spacing:1px;}
+
+/* ── Modal overlay ── */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--surf);border:1px solid var(--border);border-radius:20px;
+  padding:28px;max-width:640px;width:90%;max-height:80vh;overflow-y:auto;}
+.modal::-webkit-scrollbar{width:4px;}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:20px;}
+.student-row{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:8px;}
+.stu-name{font-size:14px;font-weight:600;}
+.stu-meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px;}
+.stu-score{font-family:var(--mono);font-size:16px;font-weight:600;}
+.score-hi{color:var(--green);}
+.score-mid{color:var(--amber);}
+.score-lo{color:var(--red);}
+.modal-close{float:right;background:transparent;border:none;color:var(--muted);
+  font-size:20px;cursor:pointer;margin-top:-4px;}
+.modal-close:hover{color:var(--text);}
+.btn-dl-all{width:100%;padding:10px;background:rgba(0,255,157,0.08);
+  border:1px solid rgba(0,255,157,0.25);border-radius:10px;
+  color:var(--green);font-family:var(--mono);font-size:12px;font-weight:600;
+  cursor:pointer;margin-top:16px;transition:all .2s;}
+.btn-dl-all:hover{background:rgba(0,255,157,0.14);}
+
+/* ── Toast ── */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9999;
+  padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;
+  transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.ok{background:var(--green);color:#000;}
+#toast.err{background:var(--red);color:#fff;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-badge">🔬</div>
+    <div>
+      <div>Biometric Liveness Detection <span style="color:var(--accent)">Exam System</span></div>
+      <div class="logo-sub">// TEACHER PANEL</div>
+    </div>
+  </div>
+  <div class="nav-btns">
+    <a class="btn-ghost" href="/">Student View</a>
+  </div>
+</header>
+
+<div class="main">
+  <!-- Left: Create Exam -->
+  <div>
+    <div class="card">
+      <div class="card-title">Create New Exam Room</div>
+      <div class="card-sub">// set time window — students cannot join outside it</div>
+
+      <form id="examForm">
+        <div class="field">
+          <label>Exam Title</label>
+          <input type="text" id="examTitle" placeholder="e.g. Mathematics Final Exam" required/>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Your Name</label>
+            <input type="text" id="teacherName" placeholder="Teacher name" required/>
+          </div>
+          <div class="field">
+            <label>Subject</label>
+            <input type="text" id="subject" placeholder="e.g. Maths"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Exam Date</label>
+          <input type="date" id="examDate" required/>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Start Time</label>
+            <input type="time" id="startTime" required/>
+          </div>
+          <div class="field">
+            <label>End Time</label>
+            <input type="time" id="endTime" required/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Exam Password (optional)</label>
+          <input type="text" id="examPwd" placeholder="Leave blank for no password"/>
+        </div>
+        <button class="btn-primary" type="submit" id="createBtn">
+          🚀 Generate Exam Code
+        </button>
+      </form>
+
+      <!-- Success panel -->
+      <div class="success-box" id="successBox">
+        <div class="code-caption">// EXAM CODE</div>
+        <div class="exam-code-display" id="codeDisplay">——</div>
+        <div class="code-caption">Share this code with students</div>
+        <div class="code-meta">
+          <div class="code-meta-item">
+            <div class="meta-key">DATE</div>
+            <div class="meta-val" id="metaDate">—</div>
+          </div>
+          <div class="code-meta-item">
+            <div class="meta-key">WINDOW</div>
+            <div class="meta-val" id="metaWindow">—</div>
+          </div>
+          <div class="code-meta-item">
+            <div class="meta-key">DURATION</div>
+            <div class="meta-val" id="metaDuration">—</div>
+          </div>
+          <div class="code-meta-item">
+            <div class="meta-key">PASSWORD</div>
+            <div class="meta-val" id="metaPwd">None</div>
+          </div>
+        </div>
+        <button class="btn-copy" onclick="copyCode()">📋 Copy Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Exam Rooms List -->
+  <div>
+    <div class="card">
+      <div class="rooms-header">
+        <div class="rooms-title">Active Exam Rooms</div>
+        <div class="rooms-count" id="roomCount">0 rooms</div>
+      </div>
+      <div id="roomsList">
+        <div class="empty-state">No exams created yet.<br/>Create one to get started.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Student details modal -->
+<div class="modal-overlay" id="studentModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">Student Results</div>
+    <div class="modal-sub" id="modalSub">// session data</div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// Set today as default date
+document.getElementById('examDate').value = new Date().toISOString().split('T')[0];
+
+let lastCreatedCode = '';
+
+// ── Create exam ───────────────────────────────────────────────────
+document.getElementById('examForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('createBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+
+  const body = {
+    title:      document.getElementById('examTitle').value.trim(),
+    teacher:    document.getElementById('teacherName').value.trim(),
+    subject:    document.getElementById('subject').value.trim(),
+    date:       document.getElementById('examDate').value,
+    start_time: document.getElementById('startTime').value,
+    end_time:   document.getElementById('endTime').value,
+    password:   document.getElementById('examPwd').value.trim(),
+  };
+
+  try {
+    const res  = await fetch('/api/exam/create', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Error', 'err'); return; }
+
+    lastCreatedCode = data.exam_code;
+    document.getElementById('codeDisplay').textContent = data.exam_code;
+    document.getElementById('metaDate').textContent    = body.date;
+    document.getElementById('metaWindow').textContent  = `${body.start_time} – ${body.end_time}`;
+    document.getElementById('metaDuration').textContent = `${data.duration_min} min`;
+    document.getElementById('metaPwd').textContent     = body.password || 'None';
+    document.getElementById('successBox').classList.add('show');
+
+    showToast(`Exam ${data.exam_code} created!`, 'ok');
+    loadRooms();
+  } catch (err) {
+    showToast('Server error', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🚀 Generate Exam Code';
+  }
+});
+
+function copyCode() {
+  navigator.clipboard.writeText(lastCreatedCode);
+  showToast('Code copied!', 'ok');
+}
+
+// ── Load rooms ────────────────────────────────────────────────────
+async function loadRooms() {
+  try {
+    const res  = await fetch('/api/exam/list');
+    const data = await res.json();
+    const el   = document.getElementById('roomsList');
+    document.getElementById('roomCount').textContent = `${data.length} room${data.length===1?'':'s'}`;
+
+    if (!data.length) {
+      el.innerHTML = '<div class="empty-state">No exams created yet.</div>';
+      return;
+    }
+
+    el.innerHTML = data.map(r => {
+      const now   = new Date();
+      const start = new Date(r.start_dt);
+      const end   = new Date(r.end_dt);
+      let statusClass = 'status-closed', statusLabel = 'Closed';
+      if (now >= start && now <= end)    { statusClass='status-open';   statusLabel='Live'; }
+      else if (now < start)              { statusClass='status-soon';   statusLabel='Upcoming'; }
+
+      return `
+        <div class="room-card">
+          <div class="room-card-top">
+            <div class="room-name">${r.title}</div>
+            <div class="room-code-pill">${r.exam_code}</div>
+          </div>
+          <div class="room-meta">
+            <div class="room-m">
+              <span class="room-status-dot ${statusClass}"></span>${statusLabel}
+            </div>
+            <div class="room-m">📅 ${r.date}</div>
+            <div class="room-m">🕐 ${r.start_dt.slice(11,16)}–${r.end_dt.slice(11,16)}</div>
+            <div class="room-m">⏱ ${r.duration_min} min</div>
+            <div class="room-m">👥 ${r.sessions.length} student${r.sessions.length===1?'':'s'}</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn-sm btn-sm-view" onclick="viewStudents('${r.exam_code}','${r.title}')">
+              👁 View Students
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) { console.error(e); }
+}
+
+// ── View students ─────────────────────────────────────────────────
+async function viewStudents(code, title) {
+  try {
+    const res  = await fetch(`/api/exam/${code}/students`);
+    const data = await res.json();
+
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalSub').textContent   = `// exam ${code} — ${data.length} students`;
+
+    const body = document.getElementById('modalBody');
+    if (!data.length) {
+      body.innerHTML = '<div class="empty-state">No students have joined yet.</div>';
+    } else {
+      body.innerHTML = data.map(s => {
+        const sc    = s.attention_score;
+        const scCls = sc >= 75 ? 'score-hi' : sc >= 40 ? 'score-mid' : 'score-lo';
+        return `
+          <div class="student-row">
+            <div>
+              <div class="stu-name">${s.student_name}</div>
+              <div class="stu-meta">${s.session_id} | Violations: ${s.total_violations} | ${s.status}</div>
+            </div>
+            <div style="text-align:right">
+              <div class="stu-score ${scCls}">${sc}%</div>
+              <a href="/api/report/${s.session_id}/download"
+                 style="font-family:var(--mono);font-size:10px;color:var(--green);text-decoration:none">
+                ⬇ Excel
+              </a>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    document.getElementById('studentModal').classList.add('show');
+  } catch(e) { showToast('Error loading students', 'err'); }
+}
+
+function closeModal() {
+  document.getElementById('studentModal').classList.remove('show');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `show ${type}`;
+  setTimeout(() => t.className = '', 3000);
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+loadRooms();
+setInterval(loadRooms, 15000);
+</script>
+</body>
+</html>

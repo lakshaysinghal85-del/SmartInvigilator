@@ -1,0 +1,86 @@
+{
+  "session_id": "BDDA8628",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "OMO7XP",
+  "subject": "math",
+  "start_time": "2026-03-18T07:28:00",
+  "end_time": "2026-03-18T07:28:59",
+  "scheduled_end": "2026-03-18T07:29:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "4 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:12"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:18"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "3 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:24"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 58%)",
+      "icon": "\ud83d\udcf1",
+      "time": "07:28:30"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:30"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:37"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.44)",
+      "time": "07:28:37",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "3 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:43"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "2 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:49"
+    },
+    {
+      "type": "MULTIPLE_FACES",
+      "severity": "HIGH",
+      "message": "5 faces detected in frame",
+      "icon": "\ud83d\udc65",
+      "time": "07:28:55"
+    }
+  ],
+  "attention_score": 50,
+  "total_violations": 10,
+  "status": "completed"
+}

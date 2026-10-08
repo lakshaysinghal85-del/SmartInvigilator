@@ -1,0 +1,58 @@
+{
+  "session_id": "F66F3A51",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "M0QV9Z",
+  "subject": "math",
+  "start_time": "2026-04-05T17:35:18",
+  "end_time": "2026-04-05T17:36:59",
+  "scheduled_end": "2026-04-05T17:37:00",
+  "duration_min": 2,
+  "violations": [
+    {
+      "type": "NO_FACE",
+      "severity": "MEDIUM",
+      "message": "Student not visible \u2014 left the frame",
+      "icon": "\ud83d\udeab",
+      "time": "17:35:31"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "17:35:36"
+    },
+    {
+      "type": "NO_FACE",
+      "severity": "MEDIUM",
+      "message": "Student not visible \u2014 left the frame",
+      "icon": "\ud83d\udeab",
+      "time": "17:35:57"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "17:36:05"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 59%)",
+      "icon": "\ud83d\udcf1",
+      "time": "17:36:06"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.44)",
+      "time": "17:36:46",
+      "icon": "\ud83d\udd0a"
+    }
+  ],
+  "attention_score": 70,
+  "total_violations": 6,
+  "status": "completed"
+}

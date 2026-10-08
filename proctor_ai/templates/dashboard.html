@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BLDS — Live Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+:root{--bg:#07090f;--surf:#0b1220;--surf2:#101a2e;--border:#1a2d47;
+  --accent:#00c8ff;--accent2:#7c3aed;--green:#00ff9d;--red:#ff4060;--amber:#ffb830;
+  --text:#dde8f5;--muted:#3d5470;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);
+  display:flex;flex-direction:column;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);}
+
+/* ── Topbar ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;background:var(--surf);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10;}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.logo{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.logo span{color:var(--accent);}
+.logo-icon{font-size:18px;}
+.session-pill{font-family:var(--mono);font-size:10px;color:var(--muted);
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:100px;padding:4px 12px;}
+.session-pill strong{color:var(--accent);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.rec-badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);
+  font-size:10px;font-weight:600;color:var(--red);letter-spacing:1px;}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── COUNTDOWN — prominent ── */
+.countdown-box{display:flex;flex-direction:column;align-items:center;
+  background:rgba(255,184,48,0.07);border:1px solid rgba(255,184,48,0.25);
+  border-radius:10px;padding:6px 18px;}
+.countdown-label{font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;}
+.countdown-time{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--amber);line-height:1.2;}
+.countdown-box.urgent{background:rgba(255,64,96,0.1);border-color:rgba(255,64,96,0.35);}
+.countdown-box.urgent .countdown-time,.countdown-box.urgent .countdown-label{color:var(--red);}
+
+/* ── Main grid ── */
+.main{flex:1;display:grid;grid-template-columns:1fr 320px;overflow:hidden;}
+
+/* ── Left col ── */
+.left-col{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden;}
+.video-section{flex:1;display:flex;flex-direction:column;padding:14px;gap:10px;overflow:hidden;}
+.video-hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.video-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.video-wrap{flex:1;position:relative;background:#000;border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);min-height:0;}
+.video-wrap.violation{border-color:var(--red);
+  animation:borderFlash .8s ease-in-out infinite alternate;}
+@keyframes borderFlash{from{box-shadow:0 0 0 2px rgba(255,64,96,.3)}to{box-shadow:0 0 0 4px rgba(255,64,96,.5),0 0 36px rgba(255,64,96,.15)}}
+#videoEl{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1);}
+
+/* Permission overlay */
+.cam-overlay{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:var(--bg);gap:10px;z-index:5;}
+.cam-overlay h3{font-size:15px;}
+.cam-overlay p{font-size:12px;color:var(--muted);text-align:center;max-width:260px;}
+.btn-allow{padding:10px 28px;background:linear-gradient(135deg,var(--accent),#0099bb);
+  color:#000;font-weight:800;font-size:14px;border:none;border-radius:10px;cursor:pointer;
+  font-family:var(--sans);transition:all .2s;}
+.btn-allow:hover{opacity:.9;transform:translateY(-1px);}
+
+/* Status dots */
+.status-row{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+.status-dot{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;
+  color:var(--muted);padding:4px 11px;background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);border-radius:100px;}
+.status-dot .ind{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.status-dot.ok .ind{background:var(--green);}
+.status-dot.bad .ind{background:var(--red);animation:pulse 1s infinite;}
+.status-dot.warn .ind{background:var(--amber);}
+
+/* Stats bar */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);flex-shrink:0;}
+.stat-box{padding:12px 14px;border-right:1px solid var(--border);text-align:center;}
+.stat-box:last-child{border-right:none;}
+.stat-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+.stat-val{font-family:var(--mono);font-size:20px;font-weight:600;transition:color .3s;}
+.stat-val.green{color:var(--green);}
+.stat-val.red{color:var(--red);}
+.stat-val.amber{color:var(--amber);}
+
+/* ── Right panel ── */
+.right-panel{display:flex;flex-direction:column;overflow:hidden;}
+.att-box{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.att-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.att-row{display:flex;align-items:baseline;gap:6px;margin-bottom:8px;}
+.att-score{font-family:var(--mono);font-size:40px;font-weight:600;line-height:1;transition:color .5s;}
+.att-unit{font-size:14px;color:var(--muted);}
+.score-bar{height:5px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden;}
+.score-fill{height:100%;border-radius:100px;transition:width .8s ease,background .5s;}
+
+.alerts-hdr{padding:10px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.alerts-title{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.alert-count{font-family:var(--mono);font-size:10px;background:rgba(255,64,96,0.1);
+  color:var(--red);border:1px solid rgba(255,64,96,0.25);border-radius:100px;padding:2px 10px;}
+#alertStream{flex:1;overflow-y:auto;padding:8px;}
+#alertStream::-webkit-scrollbar{width:3px;}
+#alertStream::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+.alert-item{display:flex;gap:9px;padding:9px 11px;border-radius:9px;border-left:3px solid;
+  margin-bottom:7px;animation:slideIn .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.alert-item.HIGH{background:rgba(255,64,96,.07);border-color:var(--red);}
+.alert-item.MEDIUM{background:rgba(255,184,48,.07);border-color:var(--amber);}
+.alert-item.LOW{background:rgba(0,200,255,.05);border-color:var(--accent);}
+.alert-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.alert-body{flex:1;min-width:0;}
+.alert-type{font-size:9px;font-weight:600;letter-spacing:.5px;margin-bottom:2px;}
+.alert-item.HIGH .alert-type{color:var(--red);}
+.alert-item.MEDIUM .alert-type{color:var(--amber);}
+.alert-msg{font-size:11px;font-weight:500;line-height:1.4;margin-bottom:2px;}
+.alert-meta{font-family:var(--mono);font-size:9px;color:var(--muted);}
+
+.no-alerts{text-align:center;padding:32px 16px;color:var(--muted);font-family:var(--mono);font-size:11px;}
+.no-alerts .icon{font-size:28px;margin-bottom:10px;}
+
+/* ── Exam ended overlay ── */
+.ended-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;}
+.ended-overlay.show{display:flex;}
+.ended-box{background:var(--surf);border:1px solid var(--border);border-radius:22px;
+  padding:36px;max-width:480px;width:90%;text-align:center;
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:none}}
+.ended-icon{font-size:52px;margin-bottom:16px;}
+.ended-title{font-size:22px;font-weight:800;margin-bottom:8px;}
+.ended-sub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:24px;}
+.ended-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.ended-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:10px;padding:12px;}
+.ended-key{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px;}
+.ended-val{font-family:var(--mono);font-size:16px;font-weight:600;}
+.btn-home{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#0099bb);
+  border:none;border-radius:11px;color:#000;font-family:var(--sans);font-size:14px;font-weight:800;
+  cursor:pointer;transition:opacity .2s;}
+.btn-home:hover{opacity:.85;}
+
+@media(max-width:860px){.main{grid-template-columns:1fr;}.right-panel{max-height:38vh;border-top:1px solid var(--border);}.stats-row{grid-template-columns:repeat(2,1fr);}body{overflow:auto;}}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo"><span class="logo-icon">🔬</span>Biometric Liveness <span>Exam System</span></div>
+    <div class="session-pill" id="sessionPill">
+      SESSION <strong>{{ session_id }}</strong> &nbsp;|&nbsp; {{ student_name }} &nbsp;|&nbsp; {{ exam_name }}
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="rec-badge" id="recBadge" style="display:none"><span class="rec-dot"></span>REC</div>
+    <!-- Countdown — replaces elapsed during exam -->
+    <div class="countdown-box" id="countdownBox">
+      <div class="countdown-label">TIME LEFT</div>
+      <div class="countdown-time" id="countdownDisplay">--:--</div>
+    </div>
+    <!-- NO End Exam button — student cannot stop session -->
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="left-col">
+    <div class="video-section">
+      <div class="video-hdr">
+        <div class="video-label">// LIVE FEED &nbsp; <span id="fpsLabel" style="color:var(--accent)">0 FPS</span></div>
+        <div id="connStatus" style="font-family:var(--mono);font-size:10px;color:var(--muted)">● CONNECTING</div>
+      </div>
+      <div class="video-wrap" id="videoWrap">
+        <div class="cam-overlay" id="camOverlay">
+          <div style="font-size:36px">📷</div>
+          <h3>Camera Access Required</h3>
+          <p>Allow camera and microphone to begin the exam session</p>
+          <button class="btn-allow" onclick="startCamera()">Allow Camera & Mic</button>
+        </div>
+        <video id="videoEl" autoplay playsinline muted></video>
+        <canvas id="canvasEl"></canvas>
+      </div>
+      <div class="status-row">
+        <div class="status-dot" id="dotFace"><span class="ind"></span><span>FACE</span></div>
+        <div class="status-dot" id="dotEyes"><span class="ind"></span><span>EYES</span></div>
+        <div class="status-dot" id="dotPhone"><span class="ind"></span><span>NO PHONE</span></div>
+        <div class="status-dot" id="dotAudio"><span class="ind"></span><span>AUDIO</span></div>
+        <div class="status-dot" id="dotServer"><span class="ind"></span><span>SERVER</span></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-label">Violations</div><div class="stat-val red" id="statViolations">0</div></div>
+      <div class="stat-box"><div class="stat-label">Faces</div><div class="stat-val" id="statFaces">—</div></div>
+      <div class="stat-box"><div class="stat-label">Elapsed</div><div class="stat-val amber" id="statElapsed">0:00</div></div>
+      <div class="stat-box"><div class="stat-label">Frames</div><div class="stat-val" id="statFrames">0</div></div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="att-box">
+      <div class="att-label">// ATTENTION SCORE</div>
+      <div class="att-row">
+        <div class="att-score green" id="attScore">100</div>
+        <div class="att-unit">/ 100</div>
+      </div>
+      <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:100%;background:var(--green)"></div></div>
+    </div>
+    <div class="alerts-hdr">
+      <div class="alerts-title">// VIOLATION LOG</div>
+      <div class="alert-count" id="alertCount">0 alerts</div>
+    </div>
+    <div id="alertStream">
+      <div class="no-alerts"><div class="icon">✅</div>No violations yet.<br/>Monitoring in progress...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Exam ended overlay (auto) -->
+<div class="ended-overlay" id="endedOverlay">
+  <div class="ended-box">
+    <div class="ended-icon">📋</div>
+    <div class="ended-title">Exam Session Complete</div>
+    <div class="ended-sub" id="endedReason">// time limit reached — report saved</div>
+    <div class="ended-grid">
+      <div class="ended-item"><div class="ended-key">STUDENT</div><div class="ended-val">{{ student_name }}</div></div>
+      <div class="ended-item"><div class="ended-key">SESSION</div><div class="ended-val">{{ session_id }}</div></div>
+      <div class="ended-item"><div class="ended-key">VIOLATIONS</div><div class="ended-val red" id="finalViolations">0</div></div>
+      <div class="ended-item"><div class="ended-key">ATTENTION</div><div class="ended-val green" id="finalAttention">100%</div></div>
+    </div>
+    <button class="btn-home" onclick="window.location='/'">Return to Home</button>
+  </div>
+</div>
+
+<script>
+const SESSION_ID   = "{{ session_id }}";
+const STUDENT_NAME = "{{ student_name }}";
+const EXAM_NAME    = "{{ exam_name }}";
+const END_DT_STR   = "{{ end_dt }}";
+const DURATION_MIN = parseInt("{{ duration_min }}") || 60;
+
+let socket, stream, audioContext, analyser;
+let isCapturing = false;
+let frameCount = 0, totalViolations = 0, attentionScore = 100;
+let startTime = Date.now();
+let captureInterval, audioInterval, elapsedInterval, fpsInterval;
+let fpsFrameCount = 0;
+let examEnded = false;
+
+// Scheduled end
+const END_DT = END_DT_STR ? new Date(END_DT_STR) : new Date(Date.now() + DURATION_MIN * 60000);
+
+document.addEventListener('DOMContentLoaded', () => {
+  connectSocket();
+  startElapsedTimer();
+  startCountdown();
+  // Disable right-click and keyboard shortcuts
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey||e.metaKey) && ['w','q','F4'].includes(e.key)) e.preventDefault();
+  });
+});
+
+// ── Socket ────────────────────────────────────────────────────────
+function connectSocket() {
+  socket = io({ transports: ['websocket', 'polling'] });
+  socket.on('connect', () => {
+    setDot('dotServer', 'ok');
+    document.getElementById('connStatus').textContent = '● CONNECTED';
+    document.getElementById('connStatus').style.color = 'var(--green)';
+  });
+  socket.on('disconnect', () => {
+    setDot('dotServer', 'bad');
+    document.getElementById('connStatus').textContent = '● DISCONNECTED';
+    document.getElementById('connStatus').style.color = 'var(--red)';
+  });
+  socket.on('analysis_result', handleAnalysisResult);
+  socket.on('exam_ended', data => autoEndExam(data.reason || 'Time limit reached'));
+}
+
+// ── Camera ────────────────────────────────────────────────────────
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    document.getElementById('videoEl').srcObject = stream;
+    document.getElementById('camOverlay').style.display = 'none';
+    document.getElementById('recBadge').style.display   = 'flex';
+    isCapturing = true;
+    captureInterval = setInterval(captureAndSend, 500);
+    fpsInterval = setInterval(() => {
+      document.getElementById('fpsLabel').textContent = (fpsFrameCount * 2) + ' FPS';
+      fpsFrameCount = 0;
+    }, 500);
+    startAudioMonitor(stream);
+  } catch (err) {
+    alert('Camera access denied: ' + err.message);
+  }
+}
+
+function captureAndSend() {
+  if (!socket?.connected || !isCapturing || examEnded) return;
+  const video = document.getElementById('videoEl');
+  if (!video.videoWidth) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = 640; canvas.height = 360;
+  canvas.getContext('2d').drawImage(video, 0, 0, 640, 360);
+  socket.emit('analyze_frame', { session_id: SESSION_ID, frame: canvas.toDataURL('image/jpeg', 0.7) });
+  frameCount++;
+  fpsFrameCount++;
+  document.getElementById('statFrames').textContent = frameCount;
+}
+
+// ── Audio ─────────────────────────────────────────────────────────
+function startAudioMonitor(stream) {
+  try {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser     = audioContext.createAnalyser();
+    audioContext.createMediaStreamSource(stream).connect(analyser);
+    analyser.fftSize = 512;
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+
+    audioInterval = setInterval(() => {
+      analyser.getByteFrequencyData(buf);
+      // Focus on speech frequencies (300–3400 Hz)
+      const speechBins = buf.slice(4, 45);
+      const avg = speechBins.reduce((a, b) => a + b, 0) / speechBins.length;
+      const level = avg / 255;
+      if (level > 0.30) {
+        setDot('dotAudio', 'warn');
+        socket.emit('audio_level', { session_id: SESSION_ID, level });
+      } else {
+        setDot('dotAudio', 'ok');
+      }
+    }, 1000);
+  } catch(e) { console.warn('Audio init failed:', e); }
+}
+
+// ── Analysis result ───────────────────────────────────────────────
+function handleAnalysisResult(data) {
+  const { violations, stats } = data;
+  if (examEnded) return;
+
+  if (stats) {
+    const fc = stats.face_count ?? -1;
+    if (fc >= 0) {
+      setDot('dotFace', fc === 1 ? 'ok' : fc > 1 ? 'bad' : 'warn');
+      const fv = document.getElementById('statFaces');
+      fv.textContent = fc;
+      fv.style.color = fc === 1 ? 'var(--green)' : 'var(--red)';
+    }
+    setDot('dotEyes', stats.eyes_visible ? 'ok' : 'warn');
+    setDot('dotPhone', stats.phone_detected ? 'bad' : 'ok');
+    document.getElementById('dotPhone').querySelector('span:last-child').textContent =
+      stats.phone_detected ? 'PHONE!' : 'NO PHONE';
+
+    if (stats.attention_score !== undefined) {
+      attentionScore = stats.attention_score;
+      updateAttentionScore(attentionScore);
+    }
+    if (stats.total_violations !== undefined) {
+      totalViolations = stats.total_violations;
+      document.getElementById('statViolations').textContent = totalViolations;
+    }
+    // Server-reported time remaining (override client countdown for accuracy)
+    if (stats.remaining_seconds !== undefined && stats.remaining_seconds === 0) {
+      autoEndExam('Time limit reached');
+    }
+  }
+
+  if (violations && violations.length > 0) {
+    const wrap = document.getElementById('videoWrap');
+    wrap.classList.add('violation');
+    setTimeout(() => wrap.classList.remove('violation'), 2000);
+    violations.forEach(v => addAlertCard(v));
+    document.getElementById('alertCount').textContent = totalViolations + ' alert' + (totalViolations === 1 ? '' : 's');
+  }
+}
+
+function updateAttentionScore(score) {
+  const el = document.getElementById('attScore');
+  const fill = document.getElementById('scoreFill');
+  el.textContent = score;
+  fill.style.width = score + '%';
+  const col = score >= 75 ? 'var(--green)' : score >= 40 ? 'var(--amber)' : 'var(--red)';
+  el.style.color = col;
+  fill.style.background = col;
+  document.getElementById('finalAttention').textContent = score + '%';
+  document.getElementById('finalAttention').style.color = col;
+}
+
+// ── Alert card ────────────────────────────────────────────────────
+function addAlertCard(v) {
+  const stream = document.getElementById('alertStream');
+  const noAlert = stream.querySelector('.no-alerts');
+  if (noAlert) noAlert.remove();
+  const div = document.createElement('div');
+  div.className = `alert-item ${v.severity}`;
+  div.innerHTML = `
+    <div class="alert-icon">${v.icon || '⚠️'}</div>
+    <div class="alert-body">
+      <div class="alert-type">${v.type}</div>
+      <div class="alert-msg">${v.message}</div>
+      <div class="alert-meta">${v.time} · ${v.severity}</div>
+    </div>`;
+  stream.insertBefore(div, stream.firstChild);
+}
+
+function setDot(id, state) {
+  const el = document.getElementById(id);
+  if (el) el.className = 'status-dot ' + state;
+}
+
+// ── Elapsed ───────────────────────────────────────────────────────
+function startElapsedTimer() {
+  startTime = Date.now();
+  elapsedInterval = setInterval(() => {
+    const s = Math.floor((Date.now() - startTime) / 1000);
+    const m = String(Math.floor(s / 60)).padStart(2, '0');
+    const sec = String(s % 60).padStart(2, '0');
+    document.getElementById('statElapsed').textContent = `${m}:${sec}`;
+  }, 1000);
+}
+
+// ── Countdown ─────────────────────────────────────────────────────
+function startCountdown() {
+  function tick() {
+    if (examEnded) return;
+    const rem = Math.max(0, Math.floor((END_DT - new Date()) / 1000));
+    const h   = Math.floor(rem / 3600);
+    const m   = String(Math.floor((rem % 3600) / 60)).padStart(2, '0');
+    const s   = String(rem % 60).padStart(2, '0');
+    const display = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+    document.getElementById('countdownDisplay').textContent = display;
+
+    const box = document.getElementById('countdownBox');
+    if (rem <= 300) box.classList.add('urgent');   // last 5 min → red
+    else            box.classList.remove('urgent');
+
+    if (rem <= 0 && !examEnded) {
+      autoEndExam('Time limit reached');
+      return;
+    }
+    setTimeout(tick, 1000);
+  }
+  tick();
+}
+
+// ── Auto end ──────────────────────────────────────────────────────
+async function autoEndExam(reason) {
+  if (examEnded) return;
+  examEnded = true;
+  isCapturing = false;
+  clearInterval(captureInterval);
+  clearInterval(audioInterval);
+  clearInterval(fpsInterval);
+  clearInterval(elapsedInterval);
+  if (stream) stream.getTracks().forEach(t => t.stop());
+
+  // Show ended overlay
+  document.getElementById('endedReason').textContent = `// ${reason}`;
+  document.getElementById('finalViolations').textContent = totalViolations;
+  document.getElementById('endedOverlay').classList.add('show');
+
+  // Call backend to save log + Excel
+  try {
+    await fetch(`/api/session/${SESSION_ID}/end`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ force: true }),
+    });
+  } catch(e) { console.error('End session error:', e); }
+}
+
+// Prevent navigation during exam
+window.addEventListener('beforeunload', e => {
+  if (!examEnded && isCapturing) {
+    e.preventDefault();
+    e.returnValue = 'Exam is in progress. Are you sure you want to leave?';
+  }
+});
+</script>
+</body>
+</html>

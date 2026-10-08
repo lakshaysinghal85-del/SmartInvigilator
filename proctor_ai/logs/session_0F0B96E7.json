@@ -1,0 +1,51 @@
+{
+  "session_id": "0F0B96E7",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "71GDEK",
+  "subject": "math",
+  "start_time": "2026-05-06T19:45:14",
+  "end_time": "2026-05-06T19:45:59",
+  "scheduled_end": "2026-05-06T19:46:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.40)",
+      "time": "19:45:28",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 40%)",
+      "icon": "\ud83d\udcf1",
+      "time": "19:45:32"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "19:45:34"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 45%)",
+      "icon": "\ud83d\udcf1",
+      "time": "19:45:44"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "19:45:47"
+    }
+  ],
+  "attention_score": 75,
+  "total_violations": 5,
+  "status": "completed"
+}

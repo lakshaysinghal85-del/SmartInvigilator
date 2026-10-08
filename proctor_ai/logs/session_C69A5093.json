@@ -1,0 +1,15 @@
+{
+  "session_id": "C69A5093",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "WI35XF",
+  "subject": "math",
+  "start_time": "2026-04-04T18:42:53",
+  "end_time": "2026-04-04T18:42:59",
+  "scheduled_end": "2026-04-04T18:43:00",
+  "duration_min": 1,
+  "violations": [],
+  "attention_score": 100,
+  "total_violations": 0,
+  "status": "completed"
+}

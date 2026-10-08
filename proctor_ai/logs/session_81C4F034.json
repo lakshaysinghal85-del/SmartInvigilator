@@ -1,0 +1,58 @@
+{
+  "session_id": "81C4F034",
+  "student_name": "vansh",
+  "exam_name": "math",
+  "exam_code": "L4WVI8",
+  "subject": "math",
+  "start_time": "2026-05-06T23:04:10",
+  "end_time": "2026-05-06T23:04:59",
+  "scheduled_end": "2026-05-06T23:05:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:04:18"
+    },
+    {
+      "type": "NO_FACE",
+      "severity": "MEDIUM",
+      "message": "Student not visible \u2014 left the frame",
+      "icon": "\ud83d\udeab",
+      "time": "23:04:27"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 94%)",
+      "icon": "\ud83d\udcf1",
+      "time": "23:04:35"
+    },
+    {
+      "type": "SPEECH_DETECTED",
+      "severity": "MEDIUM",
+      "message": "Speech / loud audio detected (level 0.36)",
+      "time": "23:04:39",
+      "icon": "\ud83d\udd0a"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:04:39"
+    },
+    {
+      "type": "LOOKING_AWAY",
+      "severity": "MEDIUM",
+      "message": "Eyes not visible \u2014 not facing screen",
+      "icon": "\ud83d\udc40",
+      "time": "23:04:52"
+    }
+  ],
+  "attention_score": 70,
+  "total_violations": 6,
+  "status": "completed"
+}

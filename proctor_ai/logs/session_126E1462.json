@@ -1,0 +1,44 @@
+{
+  "session_id": "126E1462",
+  "student_name": "lakshay",
+  "exam_name": "math",
+  "exam_code": "1IHR74",
+  "subject": "math",
+  "start_time": "2026-05-06T22:53:00",
+  "end_time": "2026-05-06T22:53:59",
+  "scheduled_end": "2026-05-06T22:54:00",
+  "duration_min": 1,
+  "violations": [
+    {
+      "type": "NO_FACE",
+      "severity": "MEDIUM",
+      "message": "Student not visible \u2014 left the frame",
+      "icon": "\ud83d\udeab",
+      "time": "22:53:17"
+    },
+    {
+      "type": "NO_FACE",
+      "severity": "MEDIUM",
+      "message": "Student not visible \u2014 left the frame",
+      "icon": "\ud83d\udeab",
+      "time": "22:53:29"
+    },
+    {
+      "type": "PHONE_DETECTED",
+      "severity": "HIGH",
+      "message": "Mobile phone detected (conf 45%)",
+      "icon": "\ud83d\udcf1",
+      "time": "22:53:35"
+    },
+    {
+      "type": "NO_FACE",
+      "severity": "MEDIUM",
+      "message": "Student not visible \u2014 left the frame",
+      "icon": "\ud83d\udeab",
+      "time": "22:53:50"
+    }
+  ],
+  "attention_score": 80,
+  "total_violations": 4,
+  "status": "completed"
+}
